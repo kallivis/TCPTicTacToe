@@ -35,8 +35,6 @@ class Board
         
         int row = (int)Math.floor((double)(pos / rootSize));
         int col = (pos % rootSize);
-        System.out.println("row: "+row);
-        System.out.println("col: "+col);
         currentBoard[row][col] = mark;
     }
     public String hasWinner()
