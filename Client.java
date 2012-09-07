@@ -35,14 +35,12 @@ public class Client {
 
         while(true)
         {
-          System.out.println("TRUE LOOP");
           nextLine = in.readLine();
           if (nextLine.equals("end"))
               break;
           else
               fromServer  = fromServer.concat("\n"+nextLine);
         }
-          System.out.println("AFTER LOOP");
       }
       System.out.println(fromServer);
       if (fromServer.equals("Quit"))

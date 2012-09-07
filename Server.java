@@ -31,25 +31,27 @@ public class Server {
 
       String splash = "start\n"
         +"TCP Tic Tac Toe \n" 
-        +"1 | 2 | 3 \n" 
-        +"4 | 5 | 6 \n" 
-        +"7 | 8 | 9 \n\n"
+        +"0 | 1 | 2 \n" 
+        +"3 | 4 | 5 \n" 
+        +"6 | 7 | 8 \n\n"
         +"" 
         +"Choose a number to make your move: \n"
         +"end";
 
 
     out.println(splash);
-
+String winner = null;
     while ((inputLine = in.readLine()) != null) {
       board.markAt(Integer.parseInt(inputLine), "X");
       outputLine = "";
       outputLine = outputLine.concat("start\n"); 
       outputLine = outputLine.concat(formatBoard(board.getCurrentBoard())); 
       outputLine = outputLine.concat("Choose a number to make your move: \n"); 
+      if ((winner = board.hasWinner()) != null)
+        outputLine = outputLine.concat(board.hasWinner()+" is the winner!!!\n");
       outputLine = outputLine.concat("end"); 
       out.println(outputLine);
-      if (outputLine.equals("quit"))
+      if (outputLine.equals("quit")|| winner != null)
         break;
     }
     out.close();
