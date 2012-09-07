@@ -44,7 +44,7 @@ public class Client {
         }
           System.out.println("AFTER LOOP");
       }
-      System.out.println("fromServer);
+      System.out.println(fromServer);
       if (fromServer.equals("Quit"))
       break;
 

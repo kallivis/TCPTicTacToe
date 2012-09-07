@@ -5,6 +5,7 @@ public class Server {
   public static void main(String[] args) throws IOException {
 
     ServerSocket serverSocket = null;
+    Board board = new Board();
     try {
       serverSocket = new ServerSocket(4444);
 
@@ -29,10 +30,11 @@ public class Server {
     String inputLine, outputLine;
 
       String splash = "start\n"
-        +"P2P Tic Tac Toe \n" 
+        +"TCP Tic Tac Toe \n" 
         +"1 | 2 | 3 \n" 
         +"4 | 5 | 6 \n" 
         +"7 | 8 | 9 \n\n"
+        +"" 
         +"Choose a number to make your move: \n"
         +"end";
 
@@ -40,7 +42,12 @@ public class Server {
     out.println(splash);
 
     while ((inputLine = in.readLine()) != null) {
-      outputLine = inputLine;
+      board.markAt(Integer.parseInt(inputLine), "X");
+      outputLine = "";
+      outputLine = outputLine.concat("start\n"); 
+      outputLine = outputLine.concat(formatBoard(board.getCurrentBoard())); 
+      outputLine = outputLine.concat("Choose a number to make your move: \n"); 
+      outputLine = outputLine.concat("end"); 
       out.println(outputLine);
       if (outputLine.equals("quit"))
         break;
@@ -49,5 +56,21 @@ public class Server {
     in.close();
     clientSocket.close();
     serverSocket.close();
+  }
+  private static String formatBoard(String[][] b)
+  {
+    String formatedBoard = "";
+    for (int i = 0; i < b.length; i++)
+    {
+    for (int k = 0; k < b.length; k++)
+    {
+      formatedBoard = formatedBoard.concat(" "+(b[i][k]));
+      if (k < (b.length -1))
+        formatedBoard = formatedBoard.concat(" "+"|");
+    }
+
+        formatedBoard = formatedBoard.concat(" "+"\n");
+    }
+    return formatedBoard;
   }
 }
