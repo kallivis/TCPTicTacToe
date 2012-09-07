@@ -12,12 +12,9 @@ public class TCPServer {
       ServerSocket listenSocket = new ServerSocket(serverPort); 
 
       System.out.println("server start listening... ... ...");
-int gState = 0;
       while(true) { 
-      System.out.println("SERVER gState: "+ gState);
         Socket clientSocket = listenSocket.accept(); 
-        Connection c = new Connection(clientSocket, gState); 
-        gState = c.getConnectiongState();
+        Connection c = new Connection(clientSocket); 
       } 
     } 
     catch(IOException e) {
@@ -27,27 +24,31 @@ int gState = 0;
 }
 
 class Connection extends Thread { 
-  DataInputStream input; 
-  DataOutputStream output; 
+  //DataInputStream input; 
+  //DataOutputStream output; 
   Socket clientSocket; 
-  int gState;
+  BufferedReader in; 
+  PrintWriter out;
 
-  public Connection (Socket aClientSocket, int setgState) { 
+  public Connection (Socket aClientSocket) { 
     try { 
-      gState = setgState;
       clientSocket = aClientSocket; 
-      input = new DataInputStream( clientSocket.getInputStream()); 
-      output =new DataOutputStream( clientSocket.getOutputStream()); 
-      if (gState == 0)
-      {
+      //      input = new DataInputStream( clientSocket.getInputStream()); 
+      //     output =new DataOutputStream( clientSocket.getOutputStream()); 
+      out = new PrintWriter(clientSocket.getOutputStream(), true);
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
       String splash ="P2P Tic Tac Toe \n" 
-          +"1 | 2 | 3 \n" 
-          +"4 | 5 | 6 \n" 
-          +"7 | 8 | 9 \n\n"
-          +"Choose a number to make your move: ";
-      output.writeInt(splash.length());
-      output.writeBytes(splash);
-      }
+        +"1 | 2 | 3 \n" 
+        +"4 | 5 | 6 \n" 
+        +"7 | 8 | 9 \n\n"
+        +"Choose a number to make your move: \n"
+        +"done";
+
+
+      out.println(splash+"\r\n");
+      // output.writeInt(splash.length());
+      // output.writeBytes(splash);
 
       this.start(); 
     } 
@@ -55,30 +56,43 @@ class Connection extends Thread {
       System.out.println("Connection:"+e.getMessage());
     } 
   } 
-public int getConnectiongState()
-{
-  return gState;
-}
+
   public void run() { 
     try { // an echo server 
       //  String data = input.readUTF();
 
-if (gState == 0)
-{
       //Step 1 read length
-      int nb = input.readInt();
-      System.out.println("Read Length"+ nb);
-      byte[] digit = new byte[nb];
-      //Step 2 read byte
-      System.out.println("Writing.......");
-      for(int i = 0; i < nb; i++)
-        digit[i] = input.readByte();
+      System.out.println("SERVER RUN");
+      //    int nb = input.readInt();
+      //    System.out.println("Read Length"+ nb);
+      //    byte[] digit = new byte[nb];
+      //    //Step 2 read byte
+      //    System.out.println("Writing.......");
+      //    for(int i = 0; i < nb; i++)
+      //      digit[i] = input.readByte();
 
-      String st = new String(digit);
-      System.out.println ("receive from : " + 
-          clientSocket.getInetAddress() + ":" +
-          clientSocket.getPort() + " message - " + st);
+      //    String st = new String(digit);
+      //    System.out.println ("receive from : " + 
+      //        clientSocket.getInetAddress() + ":" +
+      //        clientSocket.getPort() + " message - " + st);
+      //
+      String inputLine, outputLine;
+      while ((inputLine = in.readLine()) != null) {   
 
+        out.flush();
+        System.out.println("SERVER LOOP");
+        System.out.println(inputLine);
+        System.out.flush();
+        out.flush();
+        // outputLine = inputLine;
+        out.println(inputLine+"\r\n");
+        if (inputLine.equals("quit"))
+          break;
+
+        out.flush();
+        System.out.println("SERVER LOOP END");
+        out.flush();
+      }
       //Step 1 send length
       //   output.writeInt("Cody".length());
       //Step 2 send length
@@ -89,13 +103,6 @@ if (gState == 0)
       // output.writeBytes(" 1 | 2 | 3 "); 
       // output.writeBytes(" 4 | 5 | 6 "); 
       // output.writeBytes(" 7 | 8 | 9 "); 
-      gState = -1;
-}
-else
-{
-
-        System.out.println("SERVER ELSE");
-}
 
 
     } 
